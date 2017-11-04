@@ -37,7 +37,7 @@ gulp.task('clean', (done) => {
 });
 
 gulp.task('build', (done) => {
-  runSeq('clean', ['compile', 'gen-babel-helpers'], done);
+  runSeq('clean', ['compile', 'gen-babel-helpers', 'gen-typescript-helpers'], done);
 });
 
 gulp.task('compile', () => {
@@ -137,4 +137,12 @@ gulp.task('gen-babel-helpers', () => {
   fs.mkdirpSync('./lib/');
   fs.writeFileSync(
       './lib/babel-helpers.min.js', minified, {encoding: 'utf-8'});
+});
+
+gulp.task('gen-typescript-helpers', () => {
+  const helpersCode = fs.readFileSync('./node_modules/tslib/tslib.js', 'utf8');
+  const {code: minified} = uglify.minify(helpersCode, {fromString: true});
+  fs.mkdirpSync('./lib/');
+  fs.writeFileSync(
+      './lib/typescript-helpers.min.js', minified, {encoding: 'utf-8'});
 });
